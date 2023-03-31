@@ -50,34 +50,29 @@ public class UserController {
 	@PostMapping("/employee")
 	public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
 		Employee employee = convertDTOToEmployee(employeeDTO);
-		return convertEmployeeToDTO(userService.saveEmployee(employee));
+		return convertEntityToDTO(userService.saveEmployee(employee), new EmployeeDTO());
 	}
 
 	@PostMapping("/employee/{employeeId}")
 	public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-		return convertEmployeeToDTO(userService.getEmployee(employeeId));
+		return convertEntityToDTO(userService.getEmployee(employeeId), new EmployeeDTO());
 	}
 
 	
 	@PutMapping("/employee/{employeeId}")
 	public EmployeeDTO setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
-		return convertEmployeeToDTO(userService.setEmployeeAvailability(daysAvailable, employeeId));
+		return convertEntityToDTO(userService.setEmployeeAvailability(daysAvailable, employeeId), new EmployeeDTO());
 	}
 
 	@GetMapping("/employee/availability")
 	public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-		return userService.findEmployeesForService(employeeDTO).stream().map(employee -> convertEmployeeToDTO(employee))
+		return userService.findEmployeesForService(employeeDTO).stream().map(employee -> convertEntityToDTO(employee, new EmployeeDTO()))
 				.collect(Collectors.toList());
 	}
 
 
 
-	private EmployeeDTO convertEmployeeToDTO(Employee employee) {
-		EmployeeDTO employeeDTO = new EmployeeDTO();
-		BeanUtils.copyProperties(employee, employeeDTO);
-		employeeDTO.setDaysAvailable(employee.getWorkDays());
-		return employeeDTO;
-	}
+
 
 	public Employee convertDTOToEmployee(EmployeeDTO employeeDTO) {
 		Employee employee = new Employee();
