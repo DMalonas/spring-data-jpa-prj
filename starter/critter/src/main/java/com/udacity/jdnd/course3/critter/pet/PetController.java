@@ -1,47 +1,25 @@
 package com.udacity.jdnd.course3.critter.pet;
 
-import com.udacity.jdnd.course3.critter.schedule.Schedule;
-import com.udacity.jdnd.course3.critter.schedule.ScheduleDTO;
-import com.udacity.jdnd.course3.critter.user.Employee;
-import com.udacity.jdnd.course3.critter.user.EmployeeDTO;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import com.udacity.jdnd.course3.critter.user.Customer;
 import com.udacity.jdnd.course3.critter.user.UserService;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.udacity.jdnd.course3.critter.util.Util.convertDTOToEntity;
 import static com.udacity.jdnd.course3.critter.util.Util.convertEntityToDTO;
 
-/**
- * Handles web requests related to Pets.
- * 
- * Includes requests for both Customer and Pet Entities.
- * 
- */
+
 @RestController
 @RequestMapping("/pet")
 public class PetController {
 
 	private final PetService petService;
-	private final UserService userService;
 
-	@Autowired
-	public PetController(PetService petService, UserService userService) {
+	public PetController(PetService petService) {
 		this.petService = petService;
-		this.userService = userService;
 	}
 
 	@PostMapping
 	public PetDTO savePet(@RequestBody PetDTO petDTO) {
-		Customer customer = userService.getCustomer(petDTO.getOwnerId());
-		Pet pet = convertDTOToEntity(petDTO, Pet.class);
-		pet.setCustomer(customer);
-		return convertEntityToDTO(petService.savePet(pet), new PetDTO());
+		return convertEntityToDTO(petService.savePet(petDTO), new PetDTO());
 	}
 
 	@GetMapping("/{petId}")

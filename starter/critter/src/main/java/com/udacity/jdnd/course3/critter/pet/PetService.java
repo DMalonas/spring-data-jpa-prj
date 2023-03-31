@@ -4,30 +4,38 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.udacity.jdnd.course3.critter.user.UserService;
 import org.springframework.stereotype.Service;
-
 import com.udacity.jdnd.course3.critter.user.Customer;
 import com.udacity.jdnd.course3.critter.user.CustomerRepository;
+import static com.udacity.jdnd.course3.critter.util.Util.convertDTOToEntity;
 
 @Service
 @Transactional
 public class PetService {
 
-	@Autowired
-	PetRepository petRepository;
+	private final PetRepository petRepository;
 
-	@Autowired
-	private CustomerRepository customerRepository;
+	private final CustomerRepository customerRepository;
 
-	public Pet savePet(Pet pet) {
-		Pet persistedPet = petRepository.save(pet); // persist data
+	private final UserService userService;
 
-		Customer customer = persistedPet.getCustomer(); // get Customer
-		customer.addPet(persistedPet); // update pets associated
-		customerRepository.save(customer); // update database
 
-		return persistedPet;
+	public PetService(PetRepository petRepository, CustomerRepository customerRepository, UserService userService) {
+		this.petRepository = petRepository;
+		this.customerRepository = customerRepository;
+		this.userService = userService;
+	}
+
+	public Pet savePet(PetDTO petDTO) {
+		Customer customer = userService.getCustomer(petDTO.getOwnerId());
+		Pet pet = convertDTOToEntity(petDTO, Pet.class);
+		pet.setCustomer(customer);
+		Pet savedPet = petRepository.save(pet);
+		customer = savedPet.getCustomer();
+		customer.addPet(savedPet);
+		customerRepository.save(customer);
+		return savedPet;
 	}
 
 	public Pet getPet(long id) {
