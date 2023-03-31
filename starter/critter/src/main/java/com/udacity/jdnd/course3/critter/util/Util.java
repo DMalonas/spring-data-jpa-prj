@@ -20,6 +20,11 @@ public class Util {
         try {
             entity = entityClass.newInstance();
             BeanUtils.copyProperties(dto, entity);
+            if (dto instanceof EmployeeDTO) {
+                if (((EmployeeDTO) dto).getDaysAvailable() != null) {
+                    ((Employee) entity).setWorkDays(((EmployeeDTO) dto).getDaysAvailable().stream().collect(Collectors.toSet()));
+                }
+            }
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }

@@ -1,14 +1,13 @@
 package com.udacity.jdnd.course3.critter.user;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
-import com.udacity.jdnd.course3.critter.pet.Pet;
 import com.udacity.jdnd.course3.critter.pet.PetService;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-
+import static com.udacity.jdnd.course3.critter.util.Util.convertDTOToEntity;
 import static com.udacity.jdnd.course3.critter.util.Util.convertEntityToDTO;
 
 /**
@@ -49,7 +48,7 @@ public class UserController {
 
 	@PostMapping("/employee")
 	public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-		Employee employee = convertDTOToEmployee(employeeDTO);
+		Employee employee = convertDTOToEntity(employeeDTO, Employee.class);
 		return convertEntityToDTO(userService.saveEmployee(employee), new EmployeeDTO());
 	}
 
@@ -66,18 +65,10 @@ public class UserController {
 
 	@GetMapping("/employee/availability")
 	public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-		return userService.findEmployeesForService(employeeDTO).stream().map(employee -> convertEntityToDTO(employee, new EmployeeDTO()))
+		List<Employee> employeesForService = userService.findEmployeesForService(employeeDTO);
+		Function<Employee, EmployeeDTO> employeeEmployeeDTOFunction = employee -> convertEntityToDTO(employee, new EmployeeDTO());
+		List<EmployeeDTO> collect = employeesForService.stream().map(employeeEmployeeDTOFunction)
 				.collect(Collectors.toList());
-	}
-
-
-
-
-
-	public Employee convertDTOToEmployee(EmployeeDTO employeeDTO) {
-		Employee employee = new Employee();
-		BeanUtils.copyProperties(employeeDTO, employee);
-		employee.setWorkDays(employeeDTO.getDaysAvailable());
-		return employee;
+		return collect;
 	}
 }
