@@ -1,7 +1,6 @@
 package com.udacity.jdnd.course3.critter.pet;
 
 import org.springframework.web.bind.annotation.*;
-import com.udacity.jdnd.course3.critter.user.UserService;
 import java.util.List;
 import java.util.stream.Collectors;
 import static com.udacity.jdnd.course3.critter.util.Util.convertEntityToDTO;

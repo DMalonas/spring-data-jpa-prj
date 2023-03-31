@@ -5,7 +5,6 @@ import com.udacity.jdnd.course3.critter.pet.PetService;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import static com.udacity.jdnd.course3.critter.util.Util.convertDTOToEntity;
 import static com.udacity.jdnd.course3.critter.util.Util.convertEntityToDTO;
@@ -20,8 +19,7 @@ import static com.udacity.jdnd.course3.critter.util.Util.convertEntityToDTO;
 @RequestMapping("/user")
 public class UserController {
 
-	private UserService userService;
-
+	private final UserService userService;
 	private final PetService petService;
 
 	public UserController(UserService userService, PetService petService) {
@@ -30,14 +28,14 @@ public class UserController {
 	}
 
 	@PostMapping("/customer")
-	public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
-		return convertEntityToDTO(userService.saveCustomer(customerDTO), new CustomerDTO());
+	public CustomerDTO saveCustomer(@RequestBody CustomerDTO dto) {
+		return convertEntityToDTO(userService.saveCustomer(dto), new CustomerDTO());
 	}
+
 	@GetMapping("/customer")
 	public List<CustomerDTO> getAllCustomers() {
-		return userService.getCustomers()
-				.stream()
-				.map(customer -> convertEntityToDTO(customer, new CustomerDTO()))
+		return userService.getCustomers().stream()
+				.map(c -> convertEntityToDTO(c, new CustomerDTO()))
 				.collect(Collectors.toList());
 	}
 
@@ -47,28 +45,27 @@ public class UserController {
 	}
 
 	@PostMapping("/employee")
-	public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-		Employee employee = convertDTOToEntity(employeeDTO, Employee.class);
-		return convertEntityToDTO(userService.saveEmployee(employee), new EmployeeDTO());
+	public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO dto) {
+		Employee e = convertDTOToEntity(dto, Employee.class);
+		return convertEntityToDTO(userService.saveEmployee(e), new EmployeeDTO());
 	}
 
-	@PostMapping("/employee/{employeeId}")
+	@GetMapping("/employee/{employeeId}")
 	public EmployeeDTO getEmployee(@PathVariable long employeeId) {
 		return convertEntityToDTO(userService.getEmployee(employeeId), new EmployeeDTO());
 	}
 
-	
 	@PutMapping("/employee/{employeeId}")
-	public EmployeeDTO setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
-		return convertEntityToDTO(userService.setEmployeeAvailability(daysAvailable, employeeId), new EmployeeDTO());
+	public EmployeeDTO setAvailability(@RequestBody Set<DayOfWeek> days, @PathVariable long employeeId) {
+		return convertEntityToDTO(userService.setEmployeeWorkDays(days, employeeId), new EmployeeDTO());
 	}
 
 	@GetMapping("/employee/availability")
-	public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-		List<Employee> employeesForService = userService.findEmployeesForService(employeeDTO);
-		Function<Employee, EmployeeDTO> employeeEmployeeDTOFunction = employee -> convertEntityToDTO(employee, new EmployeeDTO());
-		List<EmployeeDTO> collect = employeesForService.stream().map(employeeEmployeeDTOFunction)
+	public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO dto) {
+		List<Employee> employees = userService.findEmployeesByService(dto);
+		return employees.stream()
+				.map(e -> convertEntityToDTO(e, new EmployeeDTO()))
 				.collect(Collectors.toList());
-		return collect;
 	}
+
 }

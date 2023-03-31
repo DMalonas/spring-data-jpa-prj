@@ -23,6 +23,22 @@ public class PetService {
 		this.userService = userService;
 	}
 
+	public Pet getPet(long id) {
+		return petRepository.getOne(id);
+	}
+
+	public List<Pet> getPets() {
+		return petRepository.findAll();
+	}
+
+	public List<Pet> getPetsByIds(List<Long> petIds) {
+		return petRepository.findAllById(petIds);
+	}
+
+	public List<Pet> getPetsByOwner(long id) {
+		return petRepository.findAllByCustomerId(id);
+	}
+
 	public Pet savePet(PetDTO petDTO) {
 		Customer customer = userService.getCustomer(petDTO.getOwnerId());
 		Pet pet = convertDTOToEntity(petDTO, Pet.class);
@@ -32,22 +48,6 @@ public class PetService {
 		customer.addPet(savedPet);
 		customerRepository.save(customer);
 		return savedPet;
-	}
-
-	public Pet getPet(long id) {
-		return petRepository.getOne(id);
-	}
-
-	public List<Pet> getPets() {
-		return petRepository.findAll();
-	}
-
-	public List<Pet> getPetsByOwner(long ownerId) {
-		return petRepository.findAllByCustomerId(ownerId);
-	}
-
-	public List<Pet> getPetsByIds(List<Long> petIds) {
-		return petRepository.findAllById(petIds);
 	}
 
 }

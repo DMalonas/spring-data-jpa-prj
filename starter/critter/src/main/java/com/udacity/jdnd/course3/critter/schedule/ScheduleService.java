@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udacity.jdnd.course3.critter.pet.Pet;
@@ -33,16 +32,7 @@ public class ScheduleService {
 		this.petRepository = petRepository;
 	}
 
-	public Schedule saveSchedule(Schedule schedule) {
-		return scheduleRepository.save(schedule);
-	}
-
-	public List<Schedule> getSchedules() {
-		return scheduleRepository.findAll();
-	}
-
-
-	public List<Schedule> getSchedulesForCustomer(long id) {
+	public List<Schedule> getCustomerSchedules(long id) {
 		List<Schedule> schedulesCustomer = new ArrayList<Schedule>();
 		List<Pet> customerPets = customerRepository.getOne(id).getPets();
 		for (Pet pet : customerPets) {
@@ -51,12 +41,19 @@ public class ScheduleService {
 		return schedulesCustomer;
 	}
 
-	public List<Schedule> getSchedulesForEmployee(long id) {
+	public List<Schedule> getEmployeeSchedules(long id) {
 		return scheduleRepository.findByEmployees(employeeRepository.getOne(id));
 	}
+	public List<Schedule> getSchedules() {
+		return scheduleRepository.findAll();
+	}
 
-	public List<Schedule> getSchedulesForPet(long id) {
+	public List<Schedule> getPetSchedules(long id) {
 		return scheduleRepository.findByPets(petRepository.getOne(id));
+	}
+
+	public Schedule saveSchedule(Schedule schedule) {
+		return scheduleRepository.save(schedule);
 	}
 
 }

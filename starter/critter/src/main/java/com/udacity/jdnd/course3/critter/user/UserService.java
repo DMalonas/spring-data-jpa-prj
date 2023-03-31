@@ -8,13 +8,11 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udacity.jdnd.course3.critter.pet.PetRepository;
 
 import static com.udacity.jdnd.course3.critter.util.Util.convertDTOToEntity;
-import static com.udacity.jdnd.course3.critter.util.Util.convertEntityToDTO;
 
 @Service
 public class UserService {
@@ -28,18 +26,14 @@ public class UserService {
 	}
 
 	@Transactional
-	public Customer saveCustomer(CustomerDTO customerDTO) {
-		return customerRepository.save(convertDTOToEntity(customerDTO, Customer.class));
+	public List<Employee> getEmployeesByIds(List<Long> employeeIds) {
+		return employeeRepository.findAllById(employeeIds);
 	}
+
 
 	@Transactional
 	public Customer getCustomerByPet(long id) {
-		return customerRepository.findByPets(petRepository.getOne(id));
-	}
-
-	@Transactional
-	public Customer getCustomer(long ownerId) {
-		return customerRepository.getOne(ownerId);
+		return customerRepository.findByPets(petRepository.findById(id).get());
 	}
 
 	@Transactional
@@ -55,18 +49,22 @@ public class UserService {
 
 	@Transactional
 	public Employee getEmployee(long id) {
-		return employeeRepository.getOne(id);
+		return employeeRepository.findById(id).get();
 	}
 
 	@Transactional
-	public Employee setEmployeeAvailability(Set<DayOfWeek> days, long id) {
-		Employee employeeToUpdate = employeeRepository.getOne(id);
+	public Customer getCustomer(long id) {
+		return customerRepository.findById(id).get();
+	}
+	@Transactional
+	public Employee setEmployeeWorkDays(Set<DayOfWeek> days, long id) {
+		Employee employeeToUpdate = employeeRepository.findById(id).get();
 		employeeToUpdate.setWorkDays(days);
 		return employeeRepository.save(employeeToUpdate);
 	}
 
 	@Transactional
-	public List<Employee> findEmployeesForService(EmployeeRequestDTO employeeRequest) {
+	public List<Employee> findEmployeesByService(EmployeeRequestDTO employeeRequest) {
 		Set<EmployeeSkill> skills = employeeRequest.getSkills();
 		LocalDate date = employeeRequest.getDate();
 		List<Employee> matchedEmployees = employeeRepository.findAllByWorkDaysAndSkillsIn(date.getDayOfWeek(), skills)
@@ -77,8 +75,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public List<Employee> getEmployeesByIds(List<Long> employeeIds) {
-		return employeeRepository.findAllById(employeeIds);
+	public Customer saveCustomer(CustomerDTO customerDTO) {
+		return customerRepository.save(convertDTOToEntity(customerDTO, Customer.class));
 	}
-
 }
