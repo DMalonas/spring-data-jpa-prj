@@ -2,18 +2,26 @@ package com.udacity.jdnd.course3.critter.util;
 
 import com.udacity.jdnd.course3.critter.pet.Pet;
 import com.udacity.jdnd.course3.critter.pet.PetDTO;
+import com.udacity.jdnd.course3.critter.pet.PetService;
 import com.udacity.jdnd.course3.critter.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.schedule.ScheduleDTO;
-import com.udacity.jdnd.course3.critter.user.Customer;
-import com.udacity.jdnd.course3.critter.user.CustomerDTO;
-import com.udacity.jdnd.course3.critter.user.Employee;
-import com.udacity.jdnd.course3.critter.user.EmployeeDTO;
+import com.udacity.jdnd.course3.critter.user.*;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class Util {
+
+    private static PetService petService ;
+    private static UserService userService;
+
+    public Util(PetService petService, UserService userService) {
+        this.petService = petService;
+        this.userService = userService;
+    }
 
     public static <S, T> T convertDTOToEntity(S dto, Class<T> entityClass) {
         T entity = null;
@@ -23,6 +31,18 @@ public class Util {
             if (dto instanceof EmployeeDTO) {
                 if (((EmployeeDTO) dto).getDaysAvailable() != null) {
                     ((Employee) entity).setWorkDays(((EmployeeDTO) dto).getDaysAvailable().stream().collect(Collectors.toSet()));
+                }
+            }
+            if (dto instanceof ScheduleDTO) {
+                List<Long> petIds = ((ScheduleDTO)dto).getPetIds();
+                if (petIds != null) {
+                    List<Pet> pets = petService.getPetsByIds(petIds);
+                    ((Schedule)entity).setPets(pets);
+                }
+                List<Long> employeeIds = ((ScheduleDTO)dto).getEmployeeIds();
+                if (petIds != null) {
+                    List<Employee> employees = userService.getEmployeesByIds(employeeIds);
+                    ((Schedule)entity).setEmployees(employees);
                 }
             }
         } catch (InstantiationException | IllegalAccessException e) {
