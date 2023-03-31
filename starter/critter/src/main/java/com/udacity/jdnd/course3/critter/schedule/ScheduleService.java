@@ -17,17 +17,21 @@ import com.udacity.jdnd.course3.critter.user.EmployeeRepository;
 @Transactional
 public class ScheduleService {
 
-	@Autowired
-	ScheduleRepository scheduleRepository;
+	private final ScheduleRepository scheduleRepository;
 
-	@Autowired
-	CustomerRepository customerRepository;
+	private final CustomerRepository customerRepository;
 
-	@Autowired
-	EmployeeRepository employeeRepository;
+	private final EmployeeRepository employeeRepository;
 
-	@Autowired
-	PetRepository petRepository;
+
+	private final PetRepository petRepository;
+
+	public ScheduleService(ScheduleRepository scheduleRepository, CustomerRepository customerRepository, EmployeeRepository employeeRepository, PetRepository petRepository) {
+		this.scheduleRepository = scheduleRepository;
+		this.customerRepository = customerRepository;
+		this.employeeRepository = employeeRepository;
+		this.petRepository = petRepository;
+	}
 
 	public Schedule saveSchedule(Schedule schedule) {
 		return scheduleRepository.save(schedule);
@@ -37,20 +41,13 @@ public class ScheduleService {
 		return scheduleRepository.findAll();
 	}
 
-	/**
-	 * Get Pet schedules for each pet of the customer add them to customerSchedules
-	 * list
-	 */
+
 	public List<Schedule> getSchedulesForCustomer(long id) {
-
 		List<Schedule> schedulesCustomer = new ArrayList<Schedule>();
-
 		List<Pet> customerPets = customerRepository.getOne(id).getPets();
-
 		for (Pet pet : customerPets) {
 			schedulesCustomer.addAll(scheduleRepository.findByPets(pet));
 		}
-
 		return schedulesCustomer;
 	}
 

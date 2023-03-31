@@ -1,9 +1,7 @@
 package com.udacity.jdnd.course3.critter.pet;
 
 import java.util.List;
-
 import javax.transaction.Transactional;
-
 import com.udacity.jdnd.course3.critter.user.UserService;
 import org.springframework.stereotype.Service;
 import com.udacity.jdnd.course3.critter.user.Customer;
@@ -15,9 +13,7 @@ import static com.udacity.jdnd.course3.critter.util.Util.convertDTOToEntity;
 public class PetService {
 
 	private final PetRepository petRepository;
-
 	private final CustomerRepository customerRepository;
-
 	private final UserService userService;
 
 
