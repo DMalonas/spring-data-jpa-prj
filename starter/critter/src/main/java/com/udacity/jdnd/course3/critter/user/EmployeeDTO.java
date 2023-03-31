@@ -1,7 +1,6 @@
 package com.udacity.jdnd.course3.critter.user;
 
 import lombok.Data;
-
 import java.time.DayOfWeek;
 import java.util.Set;
 

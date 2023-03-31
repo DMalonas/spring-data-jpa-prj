@@ -4,7 +4,6 @@ import javax.persistence.*;
 
 import com.udacity.jdnd.course3.critter.schedule.Schedule;
 import lombok.Data;
-
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Set;

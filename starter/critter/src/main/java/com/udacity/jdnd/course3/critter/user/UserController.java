@@ -32,7 +32,6 @@ public class UserController {
 	public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
 		return convertCustomerToDTO(userService.saveCustomer(customerDTO));
 	}
-
 	@GetMapping("/customer")
 	public List<CustomerDTO> getAllCustomers() {
 		return userService.getCustomers()

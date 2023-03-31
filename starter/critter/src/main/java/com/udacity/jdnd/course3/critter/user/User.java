@@ -1,7 +1,6 @@
 package com.udacity.jdnd.course3.critter.user;
 
 import javax.persistence.*;
-
 import lombok.Data;
 import org.hibernate.annotations.Nationalized;
 

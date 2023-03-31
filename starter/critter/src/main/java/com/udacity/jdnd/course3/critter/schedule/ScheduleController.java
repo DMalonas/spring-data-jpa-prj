@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/schedule")
 public class ScheduleController {
-
 	private UserService userService;
 	private PetService petService;
 	private ScheduleService scheduleService;
@@ -47,7 +46,6 @@ public class ScheduleController {
         	System.out.println(sc.getPetIds());
         }
 		return scheduleDTOs;
-
 	}
 
 	@GetMapping("/pet/{petId}")
