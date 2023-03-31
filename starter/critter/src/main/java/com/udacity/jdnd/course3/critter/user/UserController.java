@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.udacity.jdnd.course3.critter.util.Util.convertEntityToDTO;
+
 /**
  * Handles web requests related to User.
  *
@@ -30,19 +32,19 @@ public class UserController {
 
 	@PostMapping("/customer")
 	public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
-		return convertCustomerToDTO(userService.saveCustomer(customerDTO));
+		return convertEntityToDTO(userService.saveCustomer(customerDTO), new CustomerDTO());
 	}
 	@GetMapping("/customer")
 	public List<CustomerDTO> getAllCustomers() {
 		return userService.getCustomers()
 				.stream()
-				.map(customer -> convertCustomerToDTO(customer))
+				.map(customer -> convertEntityToDTO(customer, new CustomerDTO()))
 				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/customer/pet/{petId}")
 	public CustomerDTO getOwnerByPet(@PathVariable long petId) {
-		return convertCustomerToDTO(userService.getCustomerByPet(petId));
+		return convertEntityToDTO(userService.getCustomerByPet(petId), new CustomerDTO());
 	}
 
 	@PostMapping("/employee")
@@ -68,16 +70,7 @@ public class UserController {
 				.collect(Collectors.toList());
 	}
 
-	private CustomerDTO convertCustomerToDTO(Customer customer) {
-		CustomerDTO customerDTO = new CustomerDTO();
-		BeanUtils.copyProperties(customer, customerDTO);
-		List<Pet> pets = customer.getPets();
-		if (pets != null) {
-			List<Long> petIds = pets.stream().map(pet -> pet.getId()).collect(Collectors.toList());
-			customerDTO.setPetIds(petIds);
-		}
-		return customerDTO;
-	}
+
 
 	private EmployeeDTO convertEmployeeToDTO(Employee employee) {
 		EmployeeDTO employeeDTO = new EmployeeDTO();

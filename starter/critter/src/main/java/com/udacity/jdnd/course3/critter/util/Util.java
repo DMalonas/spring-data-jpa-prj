@@ -4,6 +4,8 @@ import com.udacity.jdnd.course3.critter.pet.Pet;
 import com.udacity.jdnd.course3.critter.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.schedule.Schedule;
 import com.udacity.jdnd.course3.critter.schedule.ScheduleDTO;
+import com.udacity.jdnd.course3.critter.user.Customer;
+import com.udacity.jdnd.course3.critter.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.user.Employee;
 import com.udacity.jdnd.course3.critter.user.EmployeeDTO;
 import org.springframework.beans.BeanUtils;
@@ -47,6 +49,11 @@ public class Util {
             Employee employee = (Employee) entity;
             EmployeeDTO employeeDTO = (EmployeeDTO) dto;
             employeeDTO.setDaysAvailable(employee.getWorkDays());
+        } else if (dto instanceof CustomerDTO) {
+            Customer customer = (Customer)entity;
+            CustomerDTO customerDTO = (CustomerDTO) dto;
+            List<Long> petIds = customer.getPets().stream().map(pet -> pet.getId()).collect(Collectors.toList());
+            customerDTO.setPetIds(petIds);
         }
         return dto;
     }
